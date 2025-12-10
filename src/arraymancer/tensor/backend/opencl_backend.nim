@@ -39,7 +39,7 @@ proc clMalloc*[T](size: Natural): ptr UncheckedArray[T] {.inline.}=
   )
 
 proc deallocCl*[T](p: ref[ptr UncheckedArray[T]]) {.noSideEffect.}=
-  if not p[].isNil:
+  if not p.value.isNil:
     check releaseMemObject p[].toClpointer
 
 # ##############################################################
@@ -55,7 +55,9 @@ proc newClStorage*[T: SomeFloat](length: int): ClStorage[T] =
 # # Sending tensor layout to OpenCL Kernel
 
 type
-  ClLayoutArray = ref[ptr UncheckedArray[cint]]
+  ClLayoutArrayObj* = object
+    value*: ptr UncheckedArray[cint]
+  ClLayoutArray* = ref ClLayoutArrayObj
     ## Reference to an array on the device
     # TODO: finalizer
     # or replace by a distinct type with a destructor
