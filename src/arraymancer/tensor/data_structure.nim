@@ -66,7 +66,12 @@ when defined(cuda):
       if not p.value.isNil:
         discard cudaFree(p.value)
 
-when defined(opencl):
+when true:
+  import opencl
+  proc toClpointer*[T](p: ptr T|ptr UncheckedArray[T]): PMem {.inline.}=
+    cast[PMem](p)
+
+
   type
     ClStorage*[T: SomeFloat] = object
       ## Opaque seq-like structure for storage on the OpenCL backend.
